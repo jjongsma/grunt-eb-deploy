@@ -132,7 +132,6 @@ grunt.initConfig({
 ```
 
 ## Release History
-_(Nothing yet)_
 
 ### 0.1.1
 
