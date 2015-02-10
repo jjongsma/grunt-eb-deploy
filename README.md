@@ -90,39 +90,44 @@ The local credential profile to use for the AWS SDK (see "Using Profiles with th
 
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  eb_deploy: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
+#### Single Environment Deployment
+Deploy to a single application environment.
 
 ```js
 grunt.initConfig({
   eb_deploy: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+		archive: '.tmp/dist.zip',
+		application: 'eb-test-app',
+		environment: 'eb-test-app-dev'
+	}
   },
 });
 ```
 
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+#### Multiple Environment Deployment
+Deploy to multiple environments of an application.
+
+```js
+grunt.initConfig({
+  eb_deploy: {
+    options: {
+		archive: '.tmp/dist.zip',
+		application: 'eb-test-app',
+	},
+	dev: {
+		options: {
+			environment: 'eb-test-app-dev'
+		}
+	},
+	prod: {
+		options: {
+			environment: 'eb-test-app-prod'
+		}
+	},
+  },
+});
+```
 
 ## Release History
 _(Nothing yet)_
