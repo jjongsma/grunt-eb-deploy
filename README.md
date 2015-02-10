@@ -63,6 +63,8 @@ compress: {
 }
 ```
 
+A future release may support archive generation as part of the `eb_deploy` task.
+
 #### options.region
 Type: `String`
 Default value: `us-east-1`
