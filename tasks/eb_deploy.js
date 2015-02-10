@@ -9,7 +9,7 @@
 'use strict';
 
 var AWS = require('aws-sdk');
-var git = require('git-rev')
+var git = require('git-rev');
 var fs = require('fs');
 
 module.exports = function(grunt) {
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
 
     var done = this.async();
 
-    var iam = new AWS.IAM()
+    var iam = new AWS.IAM();
 
     iam.getUser({}, function(err, data) {
 
@@ -44,13 +44,13 @@ module.exports = function(grunt) {
           var m = date.getMonth() + 1;
           var d = date.getDate();
 
-          var version = new String(y)
-            + new String(m = (m < 10) ? ("0" + m) : m)
-            + new String(d = (d < 10) ? ("0" + d) : d)
-            + '-' + rev
-            + '-' + Math.floor((Math.random() * 899999) + 100000);
+          var version = String(y) +
+            String(m = (m < 10) ? ("0" + m) : m) +
+            String(d = (d < 10) ? ("0" + d) : d) +
+            '-' + rev +
+            '-' + Math.floor((Math.random() * 899999) + 100000);
 
-          var label = options.application + '-' + version
+          var label = options.application + '-' + version;
 
           var account = data.User.Arn.split(/:/)[4];
           var bucket = 'elasticbeanstalk-' + options.region + '-' + account;
