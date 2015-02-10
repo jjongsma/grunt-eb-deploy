@@ -21,14 +21,14 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-eb-deploy');
 ```
 
-## The "eb_deploy" task
+## The "ebDeploy" task
 
 ### Overview
-In your project's Gruntfile, add a section named `eb_deploy` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `ebDeploy` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
-  eb_deploy: {
+  ebDeploy: {
     options: {
       // Task-specific options go here.
     },
@@ -41,7 +41,7 @@ grunt.initConfig({
 
 ### File Lists
 
-`eb_deploy` uses `grunt-contrib-compress` internally to generate a ZIP archive before uploading it
+`ebDeploy` uses `grunt-contrib-compress` internally to generate a ZIP archive before uploading it
 to ElasticBeanstalk. For reference on how to specify file lists, please see the
 [compress task documentation](https://github.com/gruntjs/grunt-contrib-compress)
 
@@ -85,7 +85,7 @@ Deploy to a single application environment.
 
 ```js
 grunt.initConfig({
-  eb_deploy: {
+  ebDeploy: {
     options: {
 		application: 'eb-test-app',
 		environment: 'eb-test-app-dev'
@@ -103,7 +103,7 @@ Deploy to multiple environments of an application.
 
 ```js
 grunt.initConfig({
-  eb_deploy: {
+  ebDeploy: {
     options: {
 		application: 'eb-test-app',
 	},
@@ -131,14 +131,18 @@ grunt.initConfig({
 
 ## Release History
 
+#### 0.1.3 - Feb 10, 2015
+
+Ok, so I'm new to this. Changed task name to match Grunt conventions.
+
 #### 0.1.2 - Feb 10, 2015
 
-Added ZIP archive generation
+Added ZIP archive generation.
 
 #### 0.1.1 - Feb 10, 2015
 
-Added credential profile support
+Added credential profile support.
 
 #### 0.1.0 - Feb 9, 2015
 
-Initial release
+Initial release.

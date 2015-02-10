@@ -22,7 +22,7 @@ var grunt = require('grunt');
     test.ifError(value)
 */
 
-exports.eb_deploy = {
+exports.ebDeploy = {
   setUp: function(done) {
     // setup here if necessary
     done();
