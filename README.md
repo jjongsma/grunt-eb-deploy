@@ -133,10 +133,10 @@ grunt.initConfig({
 
 ## Release History
 
-### 0.1.1
+### 0.1.1 - Feb 10, 2015
 
 Added credential profile support
 
-### 0.1.0
+### 0.1.0 - Feb 9, 2015
 
 Initial release
