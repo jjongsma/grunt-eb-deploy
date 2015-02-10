@@ -14,6 +14,8 @@ var fs = require('fs');
 
 module.exports = function(grunt) {
 
+  var compress = require('grunt-contrib-compress/tasks/lib/compress')(grunt);
+
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
 
@@ -25,95 +27,106 @@ module.exports = function(grunt) {
       region: 'us-east-1'
     });
 
-    if (options.profile) {
-      AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: options.profile });
-      console.log('Using credentials from profile \'' + options.profile + '\'');
-    }
+    compress.options = {
+      archive: options.archive,
+      mode: 'zip',
+      level: 1
+    };
 
     var done = this.async();
 
-    var iam = new AWS.IAM();
+    // First use grunt-contrib-compress to build an archive
+    compress.tar(this.files, function() {
 
-    iam.getUser({}, function(err, data) {
+      if (options.profile) {
+        AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: options.profile });
+        console.log('Using credentials from profile \'' + options.profile + '\'');
+      }
 
-      if (err) {
+      var iam = new AWS.IAM();
 
-        console.log(err);
-        done(false);
+      iam.getUser({}, function(err, data) {
 
-      } else {
+        if (err) {
 
-        git.short(function(rev) { 
+          console.log(err);
+          done(false);
 
-          var date = new Date();
-          var y = date.getFullYear();
-          var m = date.getMonth() + 1;
-          var d = date.getDate();
+        } else {
 
-          var version = String(y) +
-            String(m = (m < 10) ? ('0' + m) : m) +
-            String(d = (d < 10) ? ('0' + d) : d) +
-            '-' + rev +
-            '-' + Math.floor((Math.random() * 899999) + 100000);
+          git.short(function(rev) { 
 
-          var label = options.application + '-' + version;
+            var date = new Date();
+            var y = date.getFullYear();
+            var m = date.getMonth() + 1;
+            var d = date.getDate();
 
-          var account = data.User.Arn.split(/:/)[4];
-          var bucket = 'elasticbeanstalk-' + options.region + '-' + account;
+            var version = String(y) +
+              String(m = (m < 10) ? ('0' + m) : m) +
+              String(d = (d < 10) ? ('0' + d) : d) +
+              '-' + rev +
+              '-' + Math.floor((Math.random() * 899999) + 100000);
 
-          var body = fs.createReadStream(options.archive);
-          var s3obj = new AWS.S3({ params: { Bucket: bucket, Key: label + '.zip' } });
+            var label = options.application + '-' + version;
 
-          console.log('Uploading application bundle');
-          s3obj.upload({ Body: body }).send(function(err, data) {
+            var account = data.User.Arn.split(/:/)[4];
+            var bucket = 'elasticbeanstalk-' + options.region + '-' + account;
 
-            if (err) {
-              console.log(err);
-              done(false);
-            } else {
+            var body = fs.createReadStream(options.archive);
+            var s3obj = new AWS.S3({ params: { Bucket: bucket, Key: label + '.zip' } });
 
-              console.log('Creating application version \'' + label + '\'');
-              var eb = new AWS.ElasticBeanstalk({ region: options.region });
+            console.log('Uploading application bundle');
+            s3obj.upload({ Body: body }).send(function(err, data) {
 
-              eb.createApplicationVersion({
-                ApplicationName: options.application,
-                VersionLabel: label,
-                SourceBundle: {
-                  S3Bucket: bucket,
-                  S3Key: label + '.zip'
-                }
-              }, function (err, data) {
+              if (err) {
+                console.log(err);
+                done(false);
+              } else {
 
-                if (err) {
-                  console.log(err);
-                  done(false);
-                } else {
+                console.log('Creating application version \'' + label + '\'');
+                var eb = new AWS.ElasticBeanstalk({ region: options.region });
 
-                  console.log('Updating environment \'' + options.environment + '\' to version \'' + label + '\'');
-                  eb.updateEnvironment({
-                    EnvironmentName: options.environment,
-                    VersionLabel: label
-                  }, function (err, data) {
-                    if (err) {
-                      console.log(err);
-                      done(false);
-                    } else {
-                      console.log('Environment update running, please check AWS console for progress');
-                      done();
-                    }
-                  });
+                eb.createApplicationVersion({
+                  ApplicationName: options.application,
+                  VersionLabel: label,
+                  SourceBundle: {
+                    S3Bucket: bucket,
+                    S3Key: label + '.zip'
+                  }
+                }, function (err, data) {
 
-                }
+                  if (err) {
+                    console.log(err);
+                    done(false);
+                  } else {
 
-              });
+                    console.log('Updating environment \'' + options.environment + '\' to version \'' + label + '\'');
+                    eb.updateEnvironment({
+                      EnvironmentName: options.environment,
+                      VersionLabel: label
+                    }, function (err, data) {
+                      if (err) {
+                        console.log(err);
+                        done(false);
+                      } else {
+                        console.log('Environment update running, please check AWS console for progress');
+                        done();
+                      }
+                    });
 
-            }
+                  }
+
+                });
+
+              }
+
+            });
 
           });
 
-        });
+        }
 
-      }
+      });
 
     });
 

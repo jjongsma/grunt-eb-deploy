@@ -39,31 +39,13 @@ grunt.initConfig({
 });
 ```
 
+### File Lists
+
+`eb_deploy` uses `grunt-contrib-compress` internally to generate a ZIP archive before uploading it
+to ElasticBeanstalk. For reference on how to specify file lists, please see the
+[compress task documentation](https://github.com/gruntjs/grunt-contrib-compress)
+
 ### Options
-
-#### options.archive
-Type: `String`
-Default value: `.tmp/dist.zip`
-
-The local archive to upload to ElasticBeanstalk as a new application version. This should be created
-before `eb_deploy` is run. For example, if you are building your app deployment in the `dist/` directory,
-you can create an application archive using the `compress` task:
-
-```
-compress: {
-  dist: {
-	options: {
-	  archive: '.tmp/dist.zip'
-	},
-	files: [
-	  { src: ['.ebextensions/*'] },
-	  { cwd: 'dist/', src: ['**'], expand: true }
-	]
-  }   
-}
-```
-
-A future release may support archive generation as part of the `eb_deploy` task.
 
 #### options.region
 Type: `String`
@@ -83,6 +65,12 @@ Required: `true`
 
 The ElasticBeanstalk application environment to update.
 
+#### options.archive
+Type: `String`
+Default value: `.tmp/dist.zip`
+
+The location of the ZIP archive to generate before uploading to ElasticBeanstalk.
+
 #### options.profile
 Type: `String`
 Default: none
@@ -99,10 +87,13 @@ Deploy to a single application environment.
 grunt.initConfig({
   eb_deploy: {
     options: {
-		archive: '.tmp/dist.zip',
 		application: 'eb-test-app',
 		environment: 'eb-test-app-dev'
-	}
+	},
+	files: [
+	  { src: ['.ebextensions/*'] },
+	  { cwd: 'dist/', src: ['**'], expand: true }
+	]
   },
 });
 ```
@@ -114,24 +105,35 @@ Deploy to multiple environments of an application.
 grunt.initConfig({
   eb_deploy: {
     options: {
-		archive: '.tmp/dist.zip',
 		application: 'eb-test-app',
 	},
 	dev: {
 		options: {
 			environment: 'eb-test-app-dev'
-		}
+		},
+		files: [
+		  { src: ['.ebextensions/*'] },
+		  { cwd: 'dist/', src: ['**'], expand: true }
+		]
 	},
 	prod: {
 		options: {
 			environment: 'eb-test-app-prod'
-		}
+		},
+		files: [
+		  { src: ['.ebextensions/*'] },
+		  { cwd: 'dist/', src: ['**'], expand: true }
+		]
 	},
   },
 });
 ```
 
 ## Release History
+
+#### 0.1.2 - Feb 10, 2015
+
+Added ZIP archive generation
 
 #### 0.1.1 - Feb 10, 2015
 
