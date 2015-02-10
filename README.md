@@ -1,6 +1,10 @@
 # grunt-eb-deploy
 
-> ElasticBeanstalk deployment
+A simple Grunt task to replace `eb deploy` from the  Elastic Beanstalk CLI, which also allows deploying a
+custom application distribution instead of the entire repository root.
+
+To use this task, you should install the [AWS SDK CLI](http://aws.amazon.com/cli/) and configure your credentials
+first with `aws configure`.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
