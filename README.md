@@ -37,17 +37,52 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.archive
 Type: `String`
-Default value: `',  '`
+Default value: `.tmp/dist.zip`
 
-A string value that is used to do something with whatever.
+The local archive to upload to ElasticBeanstalk as a new application version. This should be created
+before `eb_deploy` is run. For example, if you are building your app deployment in the `dist/` directory,
+you can create an application archive using the `compress` task:
 
-#### options.punctuation
+```
+compress: {
+  dist: {
+	options: {
+	  archive: '.tmp/dist.zip'
+	},
+	files: [
+	  { src: ['.ebextensions/*'] },
+	  { cwd: 'dist/', src: ['**'], expand: true }
+	]
+  }   
+}
+```
+
+#### options.region
 Type: `String`
-Default value: `'.'`
+Default value: `us-east-1`
 
-A string value that is used to do something else with whatever else.
+The AWS region to deploy the application to.
+
+#### options.application
+Type: `String`
+Required: `true`
+
+The ElasticBeanstalk application name.
+
+#### options.environment
+Type: `String`
+Required: `true`
+
+The ElasticBeanstalk application environment to update.
+
+#### options.profile
+Type: `String`
+Default: none
+
+The local credential profile to use for the AWS SDK (see "Using Profiles with the SDK" section of the
+ [Node AWS SDK docs](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html).)
 
 ### Usage Examples
 

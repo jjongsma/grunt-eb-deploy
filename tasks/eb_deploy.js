@@ -21,11 +21,13 @@ module.exports = function(grunt) {
 
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      archive: '.tmp/dist.zip'
+      archive: '.tmp/dist.zip',
+      region: 'us-east-1'
     });
 
     if (options.profile) {
-      process.env.AWS_PROFILE = options.profile;
+      AWS.config.credentials = new AWS.SharedIniFileCredentials({ profile: options.profile });
+      console.log('Using credentials from profile \'' + options.profile + '\'');
     }
 
     var done = this.async();
@@ -49,8 +51,8 @@ module.exports = function(grunt) {
           var d = date.getDate();
 
           var version = String(y) +
-            String(m = (m < 10) ? ("0" + m) : m) +
-            String(d = (d < 10) ? ("0" + d) : d) +
+            String(m = (m < 10) ? ('0' + m) : m) +
+            String(d = (d < 10) ? ('0' + d) : d) +
             '-' + rev +
             '-' + Math.floor((Math.random() * 899999) + 100000);
 
@@ -62,7 +64,7 @@ module.exports = function(grunt) {
           var body = fs.createReadStream(options.archive);
           var s3obj = new AWS.S3({ params: { Bucket: bucket, Key: label + '.zip' } });
 
-          console.log("Uploading application bundle");
+          console.log('Uploading application bundle');
           s3obj.upload({ Body: body }).send(function(err, data) {
 
             if (err) {
@@ -70,7 +72,7 @@ module.exports = function(grunt) {
               done(false);
             } else {
 
-              console.log("Creating application version '" + label + "'");
+              console.log('Creating application version \'' + label + '\'');
               var eb = new AWS.ElasticBeanstalk({ region: options.region });
 
               eb.createApplicationVersion({
@@ -87,7 +89,7 @@ module.exports = function(grunt) {
                   done(false);
                 } else {
 
-                  console.log("Updating environment '" + options.environment + "' to version '" + label + "'");
+                  console.log('Updating environment \'' + options.environment + '\' to version \'' + label + '\'');
                   eb.updateEnvironment({
                     EnvironmentName: options.environment,
                     VersionLabel: label
@@ -96,7 +98,7 @@ module.exports = function(grunt) {
                       console.log(err);
                       done(false);
                     } else {
-                      console.log("Environment update running, please check AWS console for progress");
+                      console.log('Environment update running, please check AWS console for progress');
                       done();
                     }
                   });
