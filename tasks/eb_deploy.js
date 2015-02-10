@@ -24,6 +24,10 @@ module.exports = function(grunt) {
       archive: '.tmp/dist.zip'
     });
 
+    if (options.profile) {
+      process.env.AWS_PROFILE = options.profile;
+    }
+
     var done = this.async();
 
     var iam = new AWS.IAM();
