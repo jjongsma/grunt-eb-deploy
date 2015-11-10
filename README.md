@@ -78,6 +78,12 @@ Default: none
 The local credential profile to use for the AWS SDK (see "Using Profiles with the SDK" section of the
  [Node AWS SDK docs](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html).)
 
+#### options.prefix
+Type: `String`
+Default value: `null`
+
+A string to prefix the version label. If the value is `null`, `options.application` is used instead.
+
 ### Usage Examples
 
 #### Single Environment Deployment
