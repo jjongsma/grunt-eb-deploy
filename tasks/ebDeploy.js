@@ -24,7 +24,8 @@ module.exports = function(grunt) {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
       archive: '.tmp/dist.zip',
-      region: 'us-east-1'
+      region: 'us-east-1',
+      suffix: ['date', 'rev', 'rand']
     });
 
     compress.options = {
@@ -53,19 +54,36 @@ module.exports = function(grunt) {
           done(false);
 
         } else {
-
           git.short(function(rev) { 
 
-            var date = new Date();
-            var y = date.getFullYear();
-            var m = date.getMonth() + 1;
-            var d = date.getDate();
+            var suffixes = {
+              date: function () {
+                var date = new Date();
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                var d = date.getDate();
+                return String(y)
+                  + String(m = (m < 10) ? ('0' + m) : m)
+                  + String(d = (d < 10) ? ('0' + d) : d);
+              },
 
-            var version = String(y) +
-              String(m = (m < 10) ? ('0' + m) : m) +
-              String(d = (d < 10) ? ('0' + d) : d) +
-              '-' + rev +
-              '-' + Math.floor((Math.random() * 899999) + 100000);
+              rand: function () {
+                return Math.floor((Math.random() * 899999) + 100000);
+              },
+
+              rev: function () {
+                return rev;
+              }
+            };
+
+            var version = '';
+            if (typeof options.suffix === 'string') {
+              version = grunt.template.process(options.suffix);
+            } else {
+              version = options.suffix.map(function (suffix) {
+                return suffixes[suffix]();
+              }).join('-');
+            }
 
             var label = grunt.template.process(options.prefix || options.application || '') + '-' + version;
 
