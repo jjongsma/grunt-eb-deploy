@@ -67,7 +67,7 @@ module.exports = function(grunt) {
               '-' + rev +
               '-' + Math.floor((Math.random() * 899999) + 100000);
 
-            var label = (options.prefix || options.application) + '-' + version;
+            var label = grunt.template.process(options.prefix || options.application || '') + '-' + version;
 
             var account = data.User.Arn.split(/:/)[4];
             var bucket = 'elasticbeanstalk-' + options.region + '-' + account;
