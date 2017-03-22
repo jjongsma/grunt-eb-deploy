@@ -39,7 +39,7 @@
     "gruntplugin"
   ],
   "dependencies": {
-    "aws-sdk": "^2.1.8",
+    "aws-sdk": "^2.6.6",
     "git-rev": "^0.2.1",
     "grunt": "^0.4.5",
     "grunt-contrib-compress": "^0.13.0"

@@ -43,9 +43,9 @@ module.exports = function(grunt) {
         console.log('Using credentials from profile \'' + options.profile + '\'');
       }
 
-      var iam = new AWS.IAM();
+      var sts = new AWS.STS();
 
-      iam.getUser({}, function(err, data) {
+      sts.getCallerIdentity({}, function(err, data) {
 
         if (err) {
 
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
 
             var label = options.application + '-' + version;
 
-            var account = data.User.Arn.split(/:/)[4];
+            var account = data.Account;
             var bucket = 'elasticbeanstalk-' + options.region + '-' + account;
 
             var body = fs.createReadStream(options.archive);
