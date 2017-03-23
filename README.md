@@ -78,6 +78,24 @@ Default: none
 The local credential profile to use for the AWS SDK (see "Using Profiles with the SDK" section of the
  [Node AWS SDK docs](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html).)
 
+#### options.prefix
+Type: `String`
+Default value: `null`
+
+A string to prefix the version label. If the value is `null`, `options.application` is used instead.
+
+#### options.suffix
+Type: `String`|`Array[String]`
+Default value: `['date','rev','rand']`
+
+The identifier to append to the version label. If the value is an array of suffix keys, each value is processed and appended with a '-' in between each identifier. 
+
+Valid suffix keys:
+
+- date - the current date in the format YYYYMMDD
+- rev - the git revision number
+- rand - a random numeric identifier
+
 ### Usage Examples
 
 #### Single Environment Deployment
