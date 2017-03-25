@@ -73,7 +73,13 @@ module.exports = function(grunt) {
             var bucket = 'elasticbeanstalk-' + options.region + '-' + account;
 
             var body = fs.createReadStream(options.archive);
-            var s3obj = new AWS.S3({ params: { Bucket: bucket, Key: label + '.zip' } });
+            var s3obj = new AWS.S3({
+                region: options.region,
+                params: {
+                    Bucket: bucket,
+                    Key: label + '.zip'
+                }
+            });
 
             console.log('Uploading application bundle');
             s3obj.upload({ Body: body }).send(function(err, data) {
