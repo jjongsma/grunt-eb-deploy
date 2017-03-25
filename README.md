@@ -90,10 +90,12 @@ grunt.initConfig({
 		application: 'eb-test-app',
 		environment: 'eb-test-app-dev'
 	},
-	files: [
-	  { src: ['.ebextensions/*'] },
-	  { cwd: 'dist/', src: ['**'], expand: true }
-	]
+	dev: {
+		files: [
+	  		{ src: ['.ebextensions/*'] },
+	  		{ cwd: 'dist/', src: ['**'], expand: true }
+		]
+	}
   },
 });
 ```
